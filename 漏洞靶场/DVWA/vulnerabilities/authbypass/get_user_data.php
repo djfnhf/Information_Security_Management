@@ -5,9 +5,9 @@ require_once DVWA_WEB_PAGE_TO_ROOT . 'dvwa/includes/dvwaPage.inc.php';
 dvwaDatabaseConnect();
 
 /*
-On high and impossible, only the admin is allowed to retrieve the data.
+[安全修复] 越权访问（IDOR）：所有等级均要求 admin 才能读取全部用户数据
 */
-if ((dvwaSecurityLevelGet() == "high" || dvwaSecurityLevelGet() == "impossible") && dvwaCurrentUser() != "admin") {
+if (dvwaCurrentUser() != "admin") {
 	print json_encode (array ("result" => "fail", "error" => "Access denied"));
 	exit;
 }
@@ -19,15 +19,10 @@ $guestbook = '';
 $users = array();
 
 while ($row = mysqli_fetch_row($result) ) { 
-	if( dvwaSecurityLevelGet() == 'impossible' ) { 
-		$user_id = $row[0];
-		$first_name = htmlspecialchars( $row[1] );
-		$surname = htmlspecialchars( $row[2] );
-	} else {
-		$user_id = $row[0];
-		$first_name = $row[1];
-		$surname = $row[2];
-	}   
+	// [安全修复] 始终对输出做 HTML 实体编码，避免客户端渲染时的 XSS
+	$user_id = $row[0];
+	$first_name = htmlspecialchars( $row[1] );
+	$surname = htmlspecialchars( $row[2] );
 
 	$user = array (
 					"user_id" => $user_id,

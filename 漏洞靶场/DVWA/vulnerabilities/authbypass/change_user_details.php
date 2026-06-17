@@ -5,10 +5,10 @@ require_once DVWA_WEB_PAGE_TO_ROOT . 'dvwa/includes/dvwaPage.inc.php';
 dvwaDatabaseConnect();
 
 /*
-On impossible only the admin is allowed to retrieve the data.
+[安全修复] 越权修改（IDOR）：所有等级均要求 admin 才能修改用户资料
 */
 
-if (dvwaSecurityLevelGet() == "impossible" && dvwaCurrentUser() != "admin") {
+if (dvwaCurrentUser() != "admin") {
 	print json_encode (array ("result" => "fail", "error" => "Access denied"));
 	exit;
 }
@@ -44,8 +44,12 @@ try {
 	exit;
 }
 
-$query = "UPDATE users SET first_name = '" . $data->first_name . "', last_name = '" .  $data->surname . "' where user_id = " . $data->id . "";
-$result = mysqli_query($GLOBALS["___mysqli_ston"],  $query ) or die( '<pre>' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . '</pre>' );
+// [安全修复] SQL 注入：改用 PDO 预编译参数绑定，user_id 强制为整型
+$stmt = $db->prepare( 'UPDATE users SET first_name = :first_name, last_name = :surname WHERE user_id = :id' );
+$stmt->bindValue( ':first_name', $data->first_name, PDO::PARAM_STR );
+$stmt->bindValue( ':surname', $data->surname, PDO::PARAM_STR );
+$stmt->bindValue( ':id', (int)$data->id, PDO::PARAM_INT );
+$stmt->execute();
 
 print json_encode (array ("result" => "ok"));
 exit;

@@ -1,0 +1,67 @@
+===================================================================
+ DVWA 漏洞整改 静态特征扫描报告
+ 生成时间: 2026-06-17 15:26:29
+ 对比基线: 整改前=git HEAD  整改后=当前工作区
+===================================================================
+
+[1] 命令注入 exec/source/low.php
+  [PASS] 1 控制点新增：IP 八位组数值白名单校验  (前=无 后=有)
+  [PASS] 1 控制点新增：Anti-CSRF Token 校验  (前=无 后=有)
+
+[2] SQL 注入 sqli/source/low.php
+  [PASS] 2 危险特征已消除：字符串拼接 SQL  (前=有 后=无)
+  [PASS] 2 控制点新增：PDO 预编译参数绑定  (前=无 后=有)
+
+[3] 文件上传 upload/source/low.php
+  [PASS] 3 控制点新增：图像内容校验  (前=无 后=有)
+  [PASS] 3 控制点新增：上传文件重命名  (前=无 后=有)
+
+[4] 文件包含 fi/source/low.php
+  [PASS] 4 控制点新增：包含路径白名单  (前=无 后=有)
+
+[5] 反射型 XSS xss_r/source/low.php
+  [PASS] 5 危险特征已消除：主动关闭浏览器 XSS 防护  (前=有 后=无)
+  [PASS] 5 控制点新增：输出 HTML 实体编码  (前=无 后=有)
+
+[6] 存储型 XSS xss_s/source/low.php
+  [PASS] 6 控制点新增：入库前 HTML 编码  (前=无 后=有)
+  [PASS] 6 控制点新增：预编译插入  (前=无 后=有)
+
+[7] CSRF csrf/source/low.php
+  [PASS] 7 控制点新增：校验当前密码  (前=无 后=有)
+  [PASS] 7 控制点新增：预编译校验  (前=无 后=有)
+
+[8] 暴力破解 brute/source/low.php
+  [PASS] 8 危险特征已消除：字符串拼接登录 SQL  (前=有 后=无)
+  [PASS] 8 控制点新增：失败计数/锁定阈值  (前=无 后=有)
+
+[9a] 越权 authbypass/get_user_data.php
+  [PASS] 9a 危险特征已消除：鉴权仅限 high/impossible  (前=有 后=无)
+  [PASS] 9a 控制点新增：所有等级要求 admin  (前=无 后=有)
+
+[9b] 越权+注入 authbypass/change_user_details.php
+  [PASS] 9b 危险特征已消除：拼接 UPDATE 语句(SQLi)  (前=有 后=无)
+  [PASS] 9b 控制点新增：PDO 预编译更新  (前=无 后=有)
+
+[9c] 开放重定向 open_redirect/source/low.php
+  [PASS] 9c 危险特征已消除：直接跳转用户可控 URL  (前=有 后=无)
+  [PASS] 9c 控制点新增：数值白名单跳转  (前=无 后=有)
+
+[9d] 弱会话 weak_id/source/low.php
+  [PASS] 9d 危险特征已消除：自增可预测会话 ID  (前=有 后=无)
+  [PASS] 9d 控制点新增：随机不可预测会话 ID  (前=无 后=有)
+
+[接线] index.php 在 low 等级渲染 CSRF Token 字段
+  [PASS] wire-exec 控制点新增：exec 表单在 low 渲染 tokenField  (前=无 后=有)
+  [PASS] wire-sqli 控制点新增：sqli 表单在 low 渲染 tokenField  (前=无 后=有)
+  [PASS] wire-upload 控制点新增：upload 表单在 low 渲染 tokenField  (前=无 后=有)
+  [PASS] wire-xss_r 控制点新增：xss_r 表单在 low 渲染 tokenField  (前=无 后=有)
+  [PASS] wire-xss_s 控制点新增：xss_s 表单在 low 渲染 tokenField  (前=无 后=有)
+  [PASS] wire-csrf 控制点新增：csrf 表单在 low 渲染 tokenField  (前=无 后=有)
+  [PASS] wire-brute 控制点新增：brute 表单在 low 渲染 tokenField  (前=无 后=有)
+  [PASS] wire-brute-method 控制点次数增加：brute 表单 low 分支新增 POST 方法  (前=1次 后=2次)
+  [PASS] wire-csrf-field 控制点新增：csrf 在 low 渲染当前密码框  (前=无 后=有)
+
+===================================================================
+ 扫描汇总: 通过 32 项 / 失败 0 项
+===================================================================

@@ -60,7 +60,7 @@ $page[ 'body' ] .= "
 				</tr>
 			</table>\n";
 
-if( $vulnerabilityFile == 'impossible.php' )
+if( $vulnerabilityFile == 'impossible.php' || $vulnerabilityFile == 'low.php' )
 	$page[ 'body' ] .= "			" . tokenField();
 
 $page[ 'body' ] .= "

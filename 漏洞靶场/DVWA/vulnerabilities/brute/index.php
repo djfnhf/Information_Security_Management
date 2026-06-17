@@ -17,6 +17,7 @@ $vulnerabilityFile = '';
 switch( dvwaSecurityLevelGet() ) {
 	case 'low':
 		$vulnerabilityFile = 'low.php';
+		$method = 'POST';
 		break;
 	case 'medium':
 		$vulnerabilityFile = 'medium.php';
@@ -47,7 +48,7 @@ $page[ 'body' ] .= "
 			<br />
 			<input type=\"submit\" value=\"Login\" name=\"Login\">\n";
 
-if( $vulnerabilityFile == 'high.php' || $vulnerabilityFile == 'impossible.php' )
+if( $vulnerabilityFile == 'high.php' || $vulnerabilityFile == 'impossible.php' || $vulnerabilityFile == 'low.php' )
 	$page[ 'body' ] .= "			" . tokenField();
 
 $page[ 'body' ] .= "
